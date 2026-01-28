@@ -16,7 +16,6 @@ function App() {
   const [selectedClassification, setSelectedClassification] = useState('');
   const [modalProduct, setModalProduct] = useState(null);
 
-  // Load CSV
   useEffect(() => {
     Papa.parse(CSV_FILE, {
       download: true,
@@ -52,7 +51,6 @@ function App() {
     });
   }, []);
 
-  // Extract unique values for filters
   const { warehouseOptions, classificationOptions } = useMemo(() => {
     const wh = new Set();
     const cl = new Set();
@@ -69,7 +67,6 @@ function App() {
     };
   }, [products]);
 
-  // Filter products
   const filteredProducts = useMemo(() => {
     const query = searchQuery.toLowerCase().trim();
     return products.filter(item => {
@@ -86,7 +83,7 @@ function App() {
     });
   }, [products, searchQuery, selectedWarehouses, selectedClassification]);
 
-  const totalStock = useMemo(() => 
+  const totalStock = useMemo(() =>
     filteredProducts.reduce((sum, p) => sum + (parseFloat(p.stock) || 0), 0),
     [filteredProducts]
   );
@@ -100,25 +97,29 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Animated Background Blobs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" style={{animationDelay: '2s'}}></div>
-        <div className="absolute -bottom-8 left-1/3 w-96 h-96 bg-pink-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" style={{animationDelay: '4s'}}></div>
+    <div className="min-h-screen">
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-cyan-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" style={{animationDelay: '2s'}}></div>
+        <div className="absolute -bottom-8 left-1/3 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob" style={{animationDelay: '4s'}}></div>
       </div>
 
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
-          {/* Header */}
-          <header className="mb-10 text-center">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-indigo-500 mb-2">
-              Explorador de Inventario
-            </h1>
-            <p className="text-gray-400 text-lg">Busca, filtra y calcula cuotas al instante.</p>
+          <header className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <svg className="w-10 h-10 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+              <h1 className="text-3xl md:text-4xl font-bold text-white">
+                Sistema de Inventario
+              </h1>
+            </div>
+            <p className="text-slate-400 text-sm md:text-base ml-13">
+              Consulta productos, verifica disponibilidad y calcula cuotas de financiamiento.
+            </p>
           </header>
 
-          {/* Filters */}
           <SearchFilters
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -133,7 +134,6 @@ function App() {
             onRefresh={() => window.location.reload()}
           />
 
-          {/* Table */}
           <ProductTable
             products={filteredProducts.slice(0, MAX_RESULTS)}
             loading={loading}
@@ -141,7 +141,6 @@ function App() {
             maxResults={MAX_RESULTS}
           />
 
-          {/* Modal */}
           {modalProduct && (
             <QuotaModal
               product={modalProduct}
